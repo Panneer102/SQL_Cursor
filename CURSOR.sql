@@ -108,3 +108,102 @@ DEALLOCATE dynamic_cursor;
 
 -- Execute the dynamic SQL
 EXEC sp_executesql @sql;
+
+
+
+CREATE TABLE Employee (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(50),
+   Place VARCHAR(50)
+    
+);
+select * from dbo.employee
+
+ALTER TRIGGER dbo.After_insert_trigger
+ON Employee
+AFTER INSERT
+
+AS
+BEGIN
+    -- Check if the inserted Name contains numbers and prevent insertion if it does
+    IF EXISTS (SELECT 1 FROM inserted WHERE Name = 'raja')
+    BEGIN
+        
+        ROLLBACK TRANSACTION; -- Roll back the transaction to prevent insertion
+        RETURN;
+    END
+    ELSE
+    BEGIN
+        -- If the Name is not 'raja', proceed with the insertion
+        INSERT INTO Employee (Name) 
+        SELECT Name FROM inserted;
+        
+        -- Display the contents of the Employee table after insertion
+        SELECT * FROM Employee;
+    END
+	 
+END;
+
+--======================-Trigger========================
+
+CREATE TABLE Employee (
+    ID INT PRIMARY KEY,
+    Name VARCHAR(50),
+   Place VARCHAR(50)
+    
+);
+select * from dbo.employee
+	
+--After Insert
+	
+ALTER TRIGGER dbo.After_insert_trigger
+ON Employee
+AFTER INSERT
+
+AS
+BEGIN
+    -- Check if the inserted Name contains numbers and prevent insertion if it does
+    IF EXISTS (SELECT 1 FROM inserted WHERE Name = 'raja')
+    BEGIN
+        
+        ROLLBACK TRANSACTION; -- Roll back the transaction to prevent insertion
+        RETURN;
+    END
+    ELSE
+    BEGIN
+        -- If the Name is not 'raja', proceed with the insertion
+        INSERT INTO Employee (Name) 
+        SELECT Name FROM inserted;
+        
+        -- Display the contents of the Employee table after insertion
+        SELECT * FROM Employee;
+    END
+	 
+END;
+
+--before Insert
+
+ALTER TRIGGER dbo.before_insert_trigger
+ON Employee
+INSTEAD of INSERT
+
+AS
+BEGIN
+    -- Check if the inserted Name contains numbers and prevent insertion if it does
+    IF EXISTS (SELECT 1 FROM inserted WHERE ID <> 1)
+    BEGIN
+        
+        ROLLBACK TRANSACTION; -- Roll back the transaction to prevent insertion
+        RETURN;
+    END
+    ELSE
+    BEGIN
+        -- If the Name is not 'raja', proceed with the insertion
+        INSERT INTO Employee (Name) 
+        SELECT Name FROM inserted;
+        
+        -- Display the contents of the Employee table after insertion
+        SELECT * FROM Employee;
+    END
+	 
+END;
